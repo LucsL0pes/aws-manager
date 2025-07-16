@@ -1,8 +1,8 @@
 import sys
-import os
-import subprocess
 import json
 import hashlib
+import time
+import webbrowser
 from configparser import ConfigParser
 from pathlib import Path
 import boto3
@@ -11,7 +11,7 @@ import boto3
 #           Script de busca por recursos em AWS Accounts via SSO (Versão Python)
 #
 # Como utilizá-lo:
-#   - Necessário ter Python 3, Boto3 e AWS CLI v2 instalados.
+#   - Necessário ter Python 3 e Boto3 instalados.
 #   - Execute com: python aws_search.py
 # ==============================================================================
 
@@ -75,6 +75,50 @@ def get_sso_token(profile_name, sso_start_url):
     except Exception as e:
         print_color(Colors.RED, f"ERRO ao ler o token do SSO: {e}")
         return None
+
+def perform_sso_login(profile_name):
+    """Realiza o login via AWS SSO usando o fluxo de device authorization."""
+    sso_start_url = get_sso_config_value(profile_name, 'sso_start_url')
+    sso_region = get_sso_config_value(profile_name, 'sso_region')
+    if not sso_start_url or not sso_region:
+        return None, None
+
+    try:
+        oidc = boto3.client('sso-oidc', region_name=sso_region)
+        reg = oidc.register_client(clientName='aws-manager', clientType='public')
+        client_id = reg['clientId']
+        client_secret = reg['clientSecret']
+        device = oidc.start_device_authorization(
+            clientId=client_id,
+            clientSecret=client_secret,
+            startUrl=sso_start_url,
+        )
+        webbrowser.open(device['verificationUriComplete'])
+        device_code = device['deviceCode']
+        interval = device['interval']
+        expires_in = device['expiresIn']
+
+        for _ in range(expires_in // interval):
+            time.sleep(interval)
+            try:
+                token = oidc.create_token(
+                    clientId=client_id,
+                    clientSecret=client_secret,
+                    grantType='urn:ietf:params:oauth:grant-type:device_code',
+                    deviceCode=device_code,
+                )
+                return token['accessToken'], sso_region
+            except oidc.exceptions.AuthorizationPendingException:
+                continue
+            except oidc.exceptions.SlowDownException:
+                time.sleep(interval)
+                continue
+            except oidc.exceptions.ExpiredTokenException:
+                break
+    except Exception as e:
+        print_color(Colors.RED, f"Falha no login do SSO: {e}")
+
+    return None, None
 
 def display_menu(title, options):
     """Exibe um menu customizado e retorna a escolha do usuário."""
@@ -314,26 +358,14 @@ def run_route53_search(access_token, sso_region):
 # INÍCIO DA EXECUÇÃO DO SCRIPT
 # ==============================================================================
 if __name__ == "__main__":
-    profile_arg = ['--profile', SSO_PROFILE] if SSO_PROFILE else []
 
     # --- Login ---
     print_color(Colors.BLUE, "Iniciando login no AWS IAM Identity Center...")
-    try:
-        subprocess.run(['aws'] + profile_arg + ['sso', 'login'], check=True)
-        print_color(Colors.GREEN, "\nLogin realizado com sucesso.")
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        print_color(Colors.RED, "Falha no login do SSO. Verifique se a AWS CLI está instalada e o perfil configurado.")
+    access_token, sso_region = perform_sso_login(SSO_PROFILE)
+    if not all([access_token, sso_region]):
+        print_color(Colors.RED, "Falha no login do SSO. Verifique suas configurações.")
         sys.exit(1)
-
-    # --- Obtenção de Tokens e Configuração ---
-    # **CORREÇÃO**: Lê explicitamente sso_start_url e sso_region do arquivo de config.
-    sso_start_url = get_sso_config_value(SSO_PROFILE, 'sso_start_url')
-    sso_region = get_sso_config_value(SSO_PROFILE, 'sso_region')
-    access_token = get_sso_token(SSO_PROFILE, sso_start_url)
-    
-    if not all([sso_start_url, sso_region, access_token]):
-        print_color(Colors.RED, "Não foi possível obter a configuração de SSO (região ou token). Saindo.")
-        sys.exit(1)
+    print_color(Colors.GREEN, "\nLogin realizado com sucesso.")
 
     # --- Menu Principal ---
     while True:

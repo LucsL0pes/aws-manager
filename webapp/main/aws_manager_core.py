@@ -1,6 +1,7 @@
-import subprocess
 import json
 import hashlib
+import time
+import webbrowser
 from configparser import ConfigParser
 from pathlib import Path
 from typing import List, Dict
@@ -41,19 +42,48 @@ def get_sso_token(profile_name: str, sso_start_url: str) -> str | None:
 
 
 def sso_login(profile: str = SSO_PROFILE) -> tuple[str, str] | None:
-    """Performs `aws sso login` and returns the access token and region."""
-    profile_arg = ["--profile", profile] if profile else []
-    try:
-        subprocess.run(["aws"] + profile_arg + ["sso", "login"], check=True)
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return None
-
+    """Realiza login via AWS SSO utilizando o fluxo de device authorization."""
     sso_start_url = get_sso_config_value(profile, "sso_start_url")
     sso_region = get_sso_config_value(profile, "sso_region")
-    access_token = get_sso_token(profile, sso_start_url)
-    if not all([sso_start_url, sso_region, access_token]):
+    if not all([sso_start_url, sso_region]):
         return None
-    return access_token, sso_region
+
+    try:
+        oidc = boto3.client("sso-oidc", region_name=sso_region)
+        reg = oidc.register_client(clientName="aws-manager", clientType="public")
+        client_id = reg["clientId"]
+        client_secret = reg["clientSecret"]
+        device = oidc.start_device_authorization(
+            clientId=client_id,
+            clientSecret=client_secret,
+            startUrl=sso_start_url,
+        )
+        webbrowser.open(device["verificationUriComplete"])
+        device_code = device["deviceCode"]
+        interval = device["interval"]
+        expires_in = device["expiresIn"]
+
+        for _ in range(expires_in // interval):
+            time.sleep(interval)
+            try:
+                token = oidc.create_token(
+                    clientId=client_id,
+                    clientSecret=client_secret,
+                    grantType="urn:ietf:params:oauth:grant-type:device_code",
+                    deviceCode=device_code,
+                )
+                return token["accessToken"], sso_region
+            except oidc.exceptions.AuthorizationPendingException:
+                continue
+            except oidc.exceptions.SlowDownException:
+                time.sleep(interval)
+                continue
+            except oidc.exceptions.ExpiredTokenException:
+                break
+    except Exception:
+        return None
+
+    return None
 
 
 def cloudfront_search(access_token: str, sso_region: str, search_type: str, search_value: str) -> List[Dict]:
