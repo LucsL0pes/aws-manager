@@ -3,8 +3,9 @@
 {% block title %}Search | AWS Manager{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Search AWS Resources</h1>
-<form method="post" class="mx-auto" style="max-width:600px;">
+<div class="search-card mx-auto" style="max-width:650px;">
+<h1 class="text-center mb-4">Buscar Recursos AWS</h1>
+<form method="post">
     {% csrf_token %}
     <div class="row g-3">
         <div class="col-md-6">
@@ -26,20 +27,26 @@
         </div>
         <div class="col-12">
             <label class="form-label">Valor</label>
-            <input type="text" name="search_value" class="form-control" required>
+            <div class="search-box">
+                <span class="material-icons">search</span>
+                <input type="text" name="search_value" required>
+            </div>
         </div>
     </div>
     <div class="text-end mt-3">
         <button type="submit" class="btn btn-primary">Buscar</button>
     </div>
 </form>
+</div>
 
 {% if error %}
     <div class="alert alert-danger mt-4">{{ error }}</div>
 {% endif %}
 
 {% if results %}
-    <h2 class="mt-5">Resultados</h2>
-    <pre>{{ results|safe }}</pre>
+    <div class="result-card">
+        <h2>Resultados</h2>
+        <pre>{{ results|safe }}</pre>
+    </div>
 {% endif %}
 {% endblock %}
