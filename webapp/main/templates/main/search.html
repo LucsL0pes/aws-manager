@@ -3,7 +3,7 @@
 {% block title %}Search | AWS Manager{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Search AWS Resources</h1>
+<h1 class="text-center mb-4">Buscar Recursos AWS</h1>
 <form method="post" class="mx-auto" style="max-width:600px;">
     {% csrf_token %}
     <div class="row g-3">
@@ -26,7 +26,10 @@
         </div>
         <div class="col-12">
             <label class="form-label">Valor</label>
-            <input type="text" name="search_value" class="form-control" required>
+            <div class="search-box">
+                <span class="material-icons">search</span>
+                <input type="text" name="search_value" required>
+            </div>
         </div>
     </div>
     <div class="text-end mt-3">
