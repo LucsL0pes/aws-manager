@@ -1,0 +1,16 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Upload Logo{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Enviar Logo</h1>
+<form method="post" enctype="multipart/form-data" class="mx-auto" style="max-width:600px;">
+    {% csrf_token %}
+    <div class="mb-3">
+        <input type="file" name="logo" accept="image/png" class="form-control" required>
+    </div>
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+</form>
+{% endblock %}

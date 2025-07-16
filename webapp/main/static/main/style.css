@@ -1,14 +1,19 @@
 body {
-    background:#1b1f26;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#0a0e14,#1f2633);
     color:#e1e4e8;
-    font-family:'Segoe UI', Arial, sans-serif;
+    font-family:'Segoe UI', Tahoma, Verdana, sans-serif;
     padding:2rem;
 }
 
 .container-box{
+    width:100%;
     max-width:1280px;
     margin:auto;
-    background:#252a36;
+    background:rgba(31,38,51,.9);
     border-radius:8px;
     padding:2rem;
     box-shadow:0 4px 16px rgba(0,0,0,.6);
@@ -28,19 +33,32 @@ footer {
 }
 
 .navbar-dark{background-color:#10141b;}
-.btn-primary{background-color:#1daafb;border-color:#1daafb;}
+.btn-primary{background-color:#00a1f6;border-color:#00a1f6;}
 
 .hero{
-    background:#10141b url('https://via.placeholder.com/1200x300?text=AWS+Manager') center/cover no-repeat;
+    background:rgba(0,0,0,.2);
     border-radius:8px;
     padding:4rem 2rem;
-    color:#fff;
+    color:#00a1f6;
     text-align:center;
     margin-bottom:2rem;
 }
 
+.logo-header{
+    width:160px;
+    display:block;
+    margin:1rem auto;
+    animation:scaleIn 1.2s ease-out forwards;
+    filter:drop-shadow(0 0 8px rgba(0,162,246,.6));
+}
+
+@keyframes scaleIn{
+    0%{transform:scale(.5);opacity:0}
+    100%{transform:scale(1);opacity:1}
+}
+
 .search-box{display:flex;justify-content:center;position:relative;margin-bottom:1.5rem}
-.search-box .material-icons{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#1daafb;font-size:1.4rem}
+.search-box .material-icons{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#00a1f6;font-size:1.4rem}
 .search-box input{width:320px;padding:.6rem 1rem .6rem 2.6rem;border:none;border-radius:4px;background:#1e232b;color:#e1e4e8;font-size:1rem}
-.search-box input:focus{outline:none;box-shadow:0 0 0 2px #1daafb}
+.search-box input:focus{outline:none;box-shadow:0 0 0 2px #00a1f6}
 
