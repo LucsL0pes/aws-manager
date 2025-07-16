@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AWS Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container py-5">
-    <h1 class="text-center">AWS Manager</h1>
-    <p class="lead text-center">Front-end inicial usando Django + Bootstrap.</p>
+{% extends 'main/base.html' %}
+
+{% block title %}Home | AWS Manager{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="mb-4">Welcome to AWS Manager</h1>
+    <p class="lead">This interface helps you search AWS resources across accounts using modern UI components.</p>
+    <a href="{% url 'search' %}" class="btn btn-primary btn-lg mt-3">Start Searching</a>
 </div>
-</body>
-</html>
+{% endblock %}
