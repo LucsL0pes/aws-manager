@@ -1,5 +1,13 @@
 from django.shortcuts import render, redirect
+from django.conf import settings
+import os
 
+
+def get_logo_url():
+    logo_path = os.path.join(settings.MEDIA_ROOT, 'logo.png')
+    if os.path.exists(logo_path):
+        return settings.MEDIA_URL + 'logo.png'
+    return None
 from .aws_manager_core import (
     sso_login,
     cloudfront_search,
@@ -10,14 +18,15 @@ from .aws_manager_core import (
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    context = {'logo_url': get_logo_url()}
+    return render(request, 'main/index.html', context)
 
 
 def search(request):
     if 'login_type' not in request.session:
         return redirect('login')
 
-    context = {}
+    context = {'logo_url': get_logo_url()}
     if request.method == 'POST':
         resource = request.POST.get('resource')
         search_type = request.POST.get('search_type')
@@ -51,7 +60,7 @@ def search(request):
 
 
 def login_view(request):
-    context = {}
+    context = {'logo_url': get_logo_url()}
     if request.method == 'POST':
         login_type = request.POST.get('login_type')
         if login_type == 'sso':
@@ -83,3 +92,15 @@ def login_view(request):
 def logout_view(request):
     request.session.flush()
     return redirect('login')
+
+
+def upload_logo(request):
+    if request.method == 'POST' and request.FILES.get('logo'):
+        os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+        logo_file = request.FILES['logo']
+        with open(os.path.join(settings.MEDIA_ROOT, 'logo.png'), 'wb+') as dest:
+            for chunk in logo_file.chunks():
+                dest.write(chunk)
+        return redirect('index')
+    context = {'logo_url': get_logo_url()}
+    return render(request, 'main/upload_logo.html', context)

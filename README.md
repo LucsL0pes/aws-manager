@@ -14,3 +14,5 @@ python manage.py runserver
 ```
 
 Open `http://127.0.0.1:8000/` in your browser and you will see the home page with navigation and search features for AWS resources.
+
+You can also upload your own company logo via the **Logo** link in the navigation menu. The uploaded PNG is displayed at the top of all pages.

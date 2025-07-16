@@ -4,6 +4,9 @@
 
 {% block content %}
 <div class="hero">
+    {% if logo_url %}
+    <img src="{{ logo_url }}" class="logo-header mb-4" alt="Company Logo">
+    {% endif %}
     <h1 class="mb-3">AWS Manager</h1>
     <p class="lead">Gerencie e pesquise recursos AWS em uma interface moderna.</p>
     <a href="{% url 'search' %}" class="btn btn-primary btn-lg mt-3">Iniciar Busca</a>
