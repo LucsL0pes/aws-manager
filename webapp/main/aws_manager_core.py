@@ -153,3 +153,72 @@ def route53_search(access_token: str, sso_region: str, search_type: str, search_
                         "account_name": target["accountName"],
                     })
     return results
+
+
+def cloudfront_search_creds(
+    access_key: str,
+    secret_key: str,
+    session_token: str | None,
+    search_type: str,
+    search_value: str,
+) -> List[Dict]:
+    """Searches CloudFront distributions using provided credentials."""
+    results: List[Dict] = []
+    client = boto3.client(
+        "cloudfront",
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        aws_session_token=session_token,
+    )
+    paginator = client.get_paginator("list_distributions")
+    for page in paginator.paginate():
+        distributions = page.get("DistributionList", {})
+        if "Items" not in distributions:
+            continue
+        for dist in distributions.get("Items", []):
+            match = False
+            if search_type == "Id" and dist.get("Id") == search_value:
+                match = True
+            elif search_type == "DomainName" and dist.get("DomainName") == search_value:
+                match = True
+            elif search_type == "Aliases" and search_value in dist.get("Aliases", {}).get("Items", []):
+                match = True
+            if match:
+                results.append({"distribution": dist})
+    return results
+
+
+def route53_search_creds(
+    access_key: str,
+    secret_key: str,
+    session_token: str | None,
+    search_type: str,
+    search_value: str,
+) -> List[Dict]:
+    """Searches Route53 records using provided credentials."""
+    results: List[Dict] = []
+    client = boto3.client(
+        "route53",
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        aws_session_token=session_token,
+    )
+
+    hosted_zones = client.list_hosted_zones().get("HostedZones", [])
+    for zone in hosted_zones:
+        zone_id = zone["Id"]
+        zone_name = zone["Name"]
+        paginator = client.get_paginator("list_resource_record_sets")
+        for page in paginator.paginate(HostedZoneId=zone_id):
+            for record in page.get("ResourceRecordSets", []):
+                match = False
+                if search_type == "Name" and search_value.lower() in record.get("Name", "").lower():
+                    match = True
+                elif search_type == "Value":
+                    for rr in record.get("ResourceRecords", []):
+                        if search_value.lower() in rr.get("Value", "").lower():
+                            match = True
+                            break
+                if match:
+                    results.append({"zone_name": zone_name, "record": record})
+    return results
