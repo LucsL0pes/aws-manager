@@ -44,7 +44,7 @@ def sso_login(profile: str = SSO_PROFILE) -> tuple[str, str] | None:
     """Performs `aws sso login` and returns the access token and region."""
     profile_arg = ["--profile", profile] if profile else []
     try:
-        subprocess.run(["aws"] + profile_arg + ["sso", "login", "--no-browser"], check=True)
+        subprocess.run(["aws"] + profile_arg + ["sso", "login"], check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 

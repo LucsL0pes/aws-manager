@@ -319,7 +319,7 @@ if __name__ == "__main__":
     # --- Login ---
     print_color(Colors.BLUE, "Iniciando login no AWS IAM Identity Center...")
     try:
-        subprocess.run(['aws'] + profile_arg + ['sso', 'login', '--no-browser'], check=True)
+        subprocess.run(['aws'] + profile_arg + ['sso', 'login'], check=True)
         print_color(Colors.GREEN, "\nLogin realizado com sucesso.")
     except (subprocess.CalledProcessError, FileNotFoundError):
         print_color(Colors.RED, "Falha no login do SSO. Verifique se a AWS CLI está instalada e o perfil configurado.")
