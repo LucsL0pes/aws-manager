@@ -3,8 +3,9 @@
 {% block title %}Search | AWS Manager{% endblock %}
 
 {% block content %}
+<div class="search-card mx-auto" style="max-width:650px;">
 <h1 class="text-center mb-4">Buscar Recursos AWS</h1>
-<form method="post" class="mx-auto" style="max-width:600px;">
+<form method="post">
     {% csrf_token %}
     <div class="row g-3">
         <div class="col-md-6">
@@ -36,6 +37,7 @@
         <button type="submit" class="btn btn-primary">Buscar</button>
     </div>
 </form>
+</div>
 
 {% if error %}
     <div class="alert alert-danger mt-4">{{ error }}</div>
