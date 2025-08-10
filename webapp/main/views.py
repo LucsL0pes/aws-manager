@@ -4,6 +4,7 @@ import os
 
 
 def get_logo_url():
+    """Return URL for the uploaded logo if present."""
     logo_path = os.path.join(settings.MEDIA_ROOT, 'logo.png')
     if os.path.exists(logo_path):
         return settings.MEDIA_URL + 'logo.png'
