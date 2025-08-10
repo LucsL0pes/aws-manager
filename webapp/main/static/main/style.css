@@ -1,114 +1,120 @@
 :root {
-    --bg-start: #0a0e14;
-    --bg-end: #1f2633;
-    --text-color: #e1e4e8;
-    --accent-color: #00a1f6;
-    --surface-color: rgba(31,38,51,.9);
-    --surface-dark: #10141b;
+    /* Primary Green Palette */
+    --primary-25: #FAFFFC;
+    --primary-50: #EBFCF3;
+    --primary-63: #e2fbec;
+    --primary-75: #D9F9E4;
+    --primary-100: #C6F6D5;
+    --primary-200: #9AE6B4;
+    --primary-300: #68D391;
+    --primary-400: #48BB78;
+    --primary-500: #38A169;
+    --primary-600: #2F855A;
+    --primary-700: #276749;
+    --primary-800: #22543D;
+    --primary-900: #1C4532;
+
+    /* Gray Palette */
+    --gray-100: #f7f7f7;
+    --gray-200: #EEEEEE;
+    --gray-300: #D9D9D9;
+    --gray-400: #ACACAC;
+    --gray-500: #787878;
+    --gray-560: #5e5e5e;
+    --gray-600: #373737;
+
+    --font-family-base: 'Roboto', Arial, sans-serif;
 }
 
-*, *::before, *::after {
-    box-sizing: border-box;
+html, body {
+    height: 100%;
 }
 
 body {
-    min-height: 100vh;
+    background-color: var(--primary-50);
+    color: var(--gray-600);
+    font-family: var(--font-family-base);
+    margin: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-    color: var(--text-color);
-    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-    padding: 2rem;
+    flex-direction: column;
 }
 
-.container-box {
-    width: 100%;
-    max-width: 1280px;
-    margin: auto;
-    background: var(--surface-color);
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 4px 16px rgba(0,0,0,.6);
+.navbar {
+    background-color: var(--primary-600);
 }
 
-.navbar-brand {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-weight: 600;
+.navbar-brand,
+.navbar .nav-link {
+    color: var(--primary-25) !important;
+    font-weight: 500;
 }
 
-footer {
-    margin-top: 4rem;
-    padding: 1rem 0;
-    background-color: var(--surface-dark);
-    color: #fff;
-}
-
-.navbar-dark {
-    background-color: var(--surface-dark);
-}
-
-.btn-primary {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.hero {
-    background: rgba(0,0,0,.2);
-    border-radius: 8px;
-    padding: 4rem 2rem;
-    color: var(--accent-color);
-    text-align: center;
-    margin-bottom: 2rem;
+.navbar .nav-link:hover,
+.navbar-brand:hover {
+    color: var(--primary-100) !important;
 }
 
 .logo-header {
-    width: 160px;
-    display: block;
+    width: 180px;
     margin: 1rem auto;
-    animation: scaleIn 1.2s ease-out forwards;
-    filter: drop-shadow(0 0 8px rgba(0,162,246,.6));
+    display: block;
 }
 
-@keyframes scaleIn {
-    0% { transform: scale(.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+main {
+    flex: 1;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-600);
+    border-color: var(--primary-600);
+}
+
+.hero {
+    background-color: var(--primary-100);
+    border-radius: 8px;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--primary-700);
+}
+
+footer {
+    background-color: var(--primary-700);
+    color: var(--primary-25);
+    padding: 1rem 0;
+    margin-top: auto;
+    text-align: center;
 }
 
 .search-box {
-    display: flex;
-    justify-content: center;
     position: relative;
-    margin-bottom: 1.5rem;
 }
 
 .search-box .material-icons {
     position: absolute;
-    left: 1rem;
+    left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--accent-color);
-    font-size: 1.4rem;
+    color: var(--primary-500);
 }
 
 .search-box input {
-    width: 320px;
-    padding: .6rem 1rem .6rem 2.6rem;
-    border: none;
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid var(--gray-300);
     border-radius: 4px;
-    background: #1e232b;
-    color: var(--text-color);
-    font-size: 1rem;
+    background: var(--primary-25);
+    color: var(--gray-600);
 }
 
 .search-box input:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--accent-color);
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--primary-100);
 }
-
-@media (max-width: 576px) {
-    .search-box input {
-        width: 100%;
-    }
-}
-
