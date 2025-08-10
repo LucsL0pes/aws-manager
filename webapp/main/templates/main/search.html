@@ -3,46 +3,48 @@
 {% block title %}Search | AWS Manager{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Buscar Recursos AWS</h1>
-<form method="post" class="mx-auto" style="max-width:600px;">
-    {% csrf_token %}
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label">Recurso</label>
-            <select name="resource" class="form-select">
-                <option value="cloudfront">CloudFront</option>
-                <option value="route53">Route53</option>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Tipo de Busca</label>
-            <select name="search_type" class="form-select">
-                <option value="Id">ID</option>
-                <option value="DomainName">DomainName</option>
-                <option value="Aliases">Aliases</option>
-                <option value="Name">Name</option>
-                <option value="Value">Value</option>
-            </select>
-        </div>
-        <div class="col-12">
-            <label class="form-label">Valor</label>
-            <div class="search-box">
-                <span class="material-icons">search</span>
-                <input type="text" name="search_value" required>
+<div class="card shadow-sm mx-auto" style="max-width:700px;">
+    <div class="card-body">
+        <h1 class="text-center mb-4">Buscar Recursos AWS</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Recurso</label>
+                    <select name="resource" class="form-select">
+                        <option value="cloudfront">CloudFront</option>
+                        <option value="route53">Route53</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tipo de Busca</label>
+                    <select name="search_type" class="form-select">
+                        <option value="Id">ID</option>
+                        <option value="DomainName">DomainName</option>
+                        <option value="Aliases">Aliases</option>
+                        <option value="Name">Name</option>
+                        <option value="Value">Value</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Valor</label>
+                    <div class="search-box">
+                        <span class="material-icons">search</span>
+                        <input type="text" name="search_value" required>
+                    </div>
+                </div>
             </div>
-        </div>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </form>
+        {% if error %}
+            <div class="alert alert-danger mt-4">{{ error }}</div>
+        {% endif %}
+        {% if results %}
+            <h2 class="mt-5">Resultados</h2>
+            <pre>{{ results|safe }}</pre>
+        {% endif %}
     </div>
-    <div class="text-end mt-3">
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    </div>
-</form>
-
-{% if error %}
-    <div class="alert alert-danger mt-4">{{ error }}</div>
-{% endif %}
-
-{% if results %}
-    <h2 class="mt-5">Resultados</h2>
-    <pre>{{ results|safe }}</pre>
-{% endif %}
+</div>
 {% endblock %}

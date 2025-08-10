@@ -3,37 +3,41 @@
 {% block title %}Login | AWS Manager{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Login</h1>
-<form method="post" class="mx-auto" style="max-width:600px;">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label class="form-label">Login Method</label>
-        <select name="login_type" id="loginType" class="form-select" onchange="toggleCreds(this.value)">
-            <option value="sso">SSO</option>
-            <option value="creds">Credentials</option>
-        </select>
+<div class="card shadow-sm mx-auto" style="max-width:600px;">
+    <div class="card-body">
+        <h1 class="text-center mb-4">Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Login Method</label>
+                <select name="login_type" id="loginType" class="form-select" onchange="toggleCreds(this.value)">
+                    <option value="sso">SSO</option>
+                    <option value="creds">Credentials</option>
+                </select>
+            </div>
+            <div id="credsFields" style="display:none;">
+                <div class="mb-3">
+                    <label class="form-label">Access Key</label>
+                    <input type="text" name="access_key" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Secret Key</label>
+                    <input type="password" name="secret_key" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Session Token (optional)</label>
+                    <input type="text" name="session_token" class="form-control">
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+        {% if error %}
+        <div class="alert alert-danger mt-4">{{ error }}</div>
+        {% endif %}
     </div>
-    <div id="credsFields" style="display:none;">
-        <div class="mb-3">
-            <label class="form-label">Access Key</label>
-            <input type="text" name="access_key" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Secret Key</label>
-            <input type="password" name="secret_key" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Session Token (optional)</label>
-            <input type="text" name="session_token" class="form-control">
-        </div>
-    </div>
-    <div class="text-end">
-        <button type="submit" class="btn btn-primary">Login</button>
-    </div>
-</form>
-{% if error %}
-<div class="alert alert-danger mt-4">{{ error }}</div>
-{% endif %}
+</div>
 {% endblock %}
 
 {% block extra_js %}

@@ -17,7 +17,12 @@
 <header class="shadow-sm">
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'index' %}">AWS Manager</a>
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+        {% if logo_url %}
+        <img src="{{ logo_url }}" alt="Logo" class="logo me-2">
+        {% endif %}
+        <span>AWS Manager</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -35,9 +40,6 @@
       </div>
     </div>
   </nav>
-  {% if logo_url %}
-  <img src="{{ logo_url }}" alt="Company Logo" class="logo-header">
-  {% endif %}
 </header>
 <main class="container my-4">
   {% block content %}{% endblock %}
